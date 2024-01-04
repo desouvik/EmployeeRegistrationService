@@ -1,4 +1,5 @@
-﻿using EmployeeRegistrationService.Models;
+﻿using EmployeeRegistrationService.Data;
+using EmployeeRegistrationService.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeRegistrationService.Repository
@@ -11,48 +12,57 @@ namespace EmployeeRegistrationService.Repository
             new Employee { Id = 3, FirstName = "Tony", LastName = "Stark", Email = "ironman@avengers.com", City = "New York" },
             new Employee { Id = 4, FirstName = "Thor", LastName = "Odinson", Email = "thor@avengers.com", City = "New York" }
             };
+        private readonly DataContext _dataContext;
 
-        public List<Employee> GetEmployees()
+        public EmployeeRepository(DataContext dataContext)
         {
-            return _employees;
+            _dataContext = dataContext;
+        }
+        public List<Employee>? GetEmployees()
+        {
+            return _dataContext.Employees.ToList();
         }
 
         public Employee? GetSingleEmployee(int id)
         {
-            var employee = _employees.Find(x => x.Id == id);
+            var employee = _dataContext.Employees.ToList().Find(x => x.Id == id);
             return employee;
         }
 
         public List<Employee>? CreateEmployee([FromBody] Employee employee)
         {
-            var existingEmployee = _employees.Find(x => x.Email.ToLower() == employee.Email.ToLower());
+            var existingEmployee = _dataContext.Employees.ToList().Find(x => x.Email.ToLower() == employee.Email.ToLower());
             if (existingEmployee != null)
             {
                 return null;
             }
-            _employees.Add(employee);
-            return _employees;
+            _dataContext.Employees.Add(employee);
+            _dataContext.SaveChanges();
+            return _dataContext.Employees.ToList();
         }
 
         public List<Employee>? DeleteEmployee(int id)
         {
-            var employee = _employees.Find(x => x.Id == id);
+            var employee = _dataContext.Employees.ToList().Find(x => x.Id == id);
             if (employee == null)
                 return null;
-            _employees.Remove(employee);
-            return _employees;
+            _dataContext.Employees.Remove(employee);
+            _dataContext.SaveChanges();
+            return _dataContext.Employees.ToList() ;
         }
 
         public List<Employee>? UpdateEmployee(int id, [FromBody] Employee request)
         {
-            var employee = _employees.Find(x => x.Id == id);
+            var employee = _dataContext.Employees.ToList().Find(x => x.Id == id);
             if (employee == null)
                 return null;
             employee.FirstName = request.FirstName;
             employee.LastName = request.LastName;
             employee.Email = request.Email;
             employee.City = request.City;
-            return _employees;
+            _dataContext.Employees.Update(employee);
+            _dataContext.SaveChanges();
+            return _dataContext.Employees.ToList();
         }
     }
 }

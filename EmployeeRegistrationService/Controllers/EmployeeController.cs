@@ -1,4 +1,5 @@
-﻿using EmployeeRegistrationService.Models;
+﻿using EmployeeRegistrationService.Data;
+using EmployeeRegistrationService.Models;
 using EmployeeRegistrationService.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -12,6 +13,7 @@ namespace EmployeeRegistrationService.Controllers
     {
         private readonly ILogger<EmployeeController> _logger;
         private readonly IEmployeeRepository _employeeRepository;
+
         public EmployeeController(ILogger<EmployeeController> logger, IEmployeeRepository employeeRepository)
         {
             _logger = logger;
@@ -57,7 +59,7 @@ namespace EmployeeRegistrationService.Controllers
         {
             if (id == 0 || id == null)
                 return BadRequest("Bad Request!");
-            var result = _employeeRepository.DeleteEmployee(id);    
+            var result = _employeeRepository.DeleteEmployee(id);
             if (result == null)
                 return NotFound("Employee is not found!");
             _logger.LogInformation("Employee deleted with id {0}...", id);
@@ -72,7 +74,7 @@ namespace EmployeeRegistrationService.Controllers
             var result = _employeeRepository.UpdateEmployee(id, request);
             if (result == null)
                 return NotFound("Employee is not found!");
-            
+
             _logger.LogInformation("Employee updated with id {0}...", id);
             return Ok(result);
         }

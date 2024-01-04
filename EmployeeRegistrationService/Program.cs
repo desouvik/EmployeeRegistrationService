@@ -1,4 +1,6 @@
+using EmployeeRegistrationService.Data;
 using EmployeeRegistrationService.Repository;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +16,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<IEmployeeRepository, EmployeeRepository>();
+//register respository classes into container
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+//register EF datacontext class with option
+builder.Services.AddDbContext<DataContext>(option => { 
+    option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")); 
+});
 
 var app = builder.Build();
 

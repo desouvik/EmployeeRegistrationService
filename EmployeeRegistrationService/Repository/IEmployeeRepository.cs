@@ -5,14 +5,14 @@ namespace EmployeeRegistrationService.Repository
 {
     public interface IEmployeeRepository
     {
-        public List<Employee> GetEmployees();
+        public List<Employee>? GetEmployees();
 
-        public Employee GetSingleEmployee(int id);
+        public Employee? GetSingleEmployee(int id);
 
-        public List<Employee> CreateEmployee([FromBody] Employee employee);
+        public List<Employee>? CreateEmployee([FromBody] Employee employee);
 
-        public List<Employee> DeleteEmployee(int id);
+        public List<Employee>? DeleteEmployee(int id);
 
-        public List<Employee> UpdateEmployee(int id, [FromBody] Employee request);
+        public List<Employee>? UpdateEmployee(int id, [FromBody] Employee request);
     }
 }
